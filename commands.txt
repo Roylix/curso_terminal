@@ -1,0 +1,226 @@
+®®®®®®®®  CURSO TERMINAL by @beco ®®®®®®®®
+https://github.com/beco/
+https://github.com/beco/cli
+https://github.com/beco/cli/blob/master/comandos.md
+
+ USOS DE LS 
+
+ls -lah Lista -l forma lista, -a ordenada alfabeticamente, -h human readable (legible para humans) 
+ls -lfh
+
+========MOVER, COPIAR, RENOMBRAR TRUCOS=============
+mkdir crea un directorio se representa con d
+mv move - mueve esto que te voy a decir a este otro lugar
+mv archivo1.txt carpeta1
+mv ../archivo1.txt (puedes dar tab para ver archivos en ese momento)
+mv ../archivo1.txt ./ //Traer un archivo del directorio al directorio actual ./
+
+mv ~/Downloads/*pdf .  //Mueve todos los archivos (*) pdfs a la carpeta actual .
+mv *pdf ~/Downloads    //caso de ejemplo los regresamos
+
+cp ../foto.jpg . //copia el mismo archivo bit a bit
+
+mv 1.process.php 1_process.php //PARA RENOMBRAR UNA ARCHIVO SE USA MV igual
+
+=======================================
+en mi teclado alt + ñ = ~ caracter tilde
+si hacemos cd ~ //nos devuelve a ruta inicial en mi caso /user/MiMacBook/ desde donde inicia mi shell por defecto
+con cd /  //Nos devuel al root total de la maquina
+=======================================
+
+
+uso de comandos en Terminal basado en schemas/commands de @beco
+comando
+comando -f 1 --banderas=1 //con banderas el 1 significa bandera -f con valor 1, cuando
+se usa --es para escribir el nombre completo de la bandera y luego igual =1 asina el va
+lor
+comando parametro.txt
+comando paramatro_1.txt parametro_2.txt
+comando -b -h 1 parametro.txt
+
+ejem: mysql --help
+
+
+=====
+top 
+cada proceso tiene un process id (PID)
+por default los ordena de mayor a menor
+presionamos o (order): CPU, PID etc
+para salir presionamos q
+
+=============================================================
+PARA TERMINAR UN PROCESO EN TERMINAL PRESIONAMOS CONTROL + C
+=============================================================
+&
+php 1.process.php & //el ampersand manda al background un proceso en terminal
+					//es decir lo ejecuta y regresa el control ala terminal para seguir //tipiando
+kill -9 (PID) elimina el proceso y su ejecucion
+
+ps -Wa Enlista los procesos 
+
+Todo proceso tiene una bandera de salida, 0 u otro numero
+cuando la bandera termina en 0 su salida fue correcta (gracefully), cuando marca 1 u otro numero por si algo paso mal o asi.
+
+echo $? Nos dice el exit status del ultimo proceso que se ejecuto
+
+
+
+php 2-stdout.php > results //Manda toda la salida del standar output a un archivo(results), si no existe el archivo lo crea, si existe lo sobreescribe desde el bit 0, el principio.
+
+con >> results escribe desde donde quedo el anterior
+
+open -a textedit operaciones.bc //Abre un archivo y lo crea en la app que le digamos
+open -a Sublime\ Text\ 2.app results //Para abrir en una app que tenga nombre con 											 //espacios como en el caso de sublime se usa
+									 // \ diagonal invertida + espacio
+
+cat operaciones.bc | bc -q //manda el resultado de operaciones.bc al standar input de bc esto se hace con el caracter pipe | 
+
+cat operaciones.bc | bc -q | wc -l > results
+
+bc -q < operaciones.bc //Hace lo que pipe, solo que lee el standar output
+
+bc -q < operaciones.bc > resultado 2>&1 ejecuta operaciones.bc en bc -q, el resultado standar output lo mandas al archivo resultado, con 2>$1
+
+bc -q < operaciones.bc > resultado 2>&1 manda el standar input a resultado y los errores del standar error a errores
+
+
+
+Uso de Grep y Find Para buscar archivos y carpetas
+wc -l TemarioCurso_IAV.rtf     //wc -l Cuenta las lineas y las muestra en el standar output
+
+cat archivo | grep CadenaABuscar //Busca dentro del Archivo la cadena a buscar
+cat archivo | grep beco
+cat archivo | grep ,beco$  		//Simn¡bolo de pesos indica el end of file ($)
+cat archivo | grep ,beco$ > fotos_de_beco //Se lo manda a un archivo nuevo fotos_de_beco
+
+cat * | wc -l    //Para buscar en todos los archivos si fue partido por un split antes
+
+grep -r . -e beco //busca recursivamente (-r) en este directorio (.) la siguiente expresion recular (-e) beco
+
+grep -r . -e ,beco$ -n //la bandera (-n) nos dice en que archivo y en que linea se encuentra esa busqueda
+
+grep -r . -e ,beco$ | grep -v icanbecontacted //-v busca y cuando encuentras esto no lo imprimas, es decir busca todos los que digan beco pero excluye los icanbecontacted
+
+grep -r . -e ^91  //(^) Gorrito busca al inicio de la linea la palabra especificada
+
+-----FIND--------
+ls -d */       //lista solo los directorios
+
+find ~/downloads/ -name '*.jpg' -type f      //busca todos los archivos del directorio que se llamen '*.jpg' y sean del tipo file (-type f)
+
+find ~/downloads/Twitter_Backgrounds -name '*.jpg' -type f -exec cp {} copia_todos/ \;
+//hace la busqueda luego ejecuta (-exec) el comando copy (cp) de todos los archivos encontrados por find ({}) a la carpeta copia_todos/ y finaliza la ejecucion con (\;)
+
+find . -name 'archivo_*' -type f -exec mv {} {}.csv \;
+//buscar en este directorio todos los archivos con el nombre_* y luego ejecuta el comando mover para renombrar los archivos encontrados y ponerles el mismo nombre con la extension.csv
+
+split -l 1000 ../archivo_texto ./archivo_en_1000lineas
+//rompe el archivo especficado a otros cada 1000 lineas
+
+defaults write com.apple.finder AppleShowAllFiles TRUE
+//Muestra las carpetas ocultas segun
+Tarea: Buscar los files en las carpetas ocultas en /downloads y pasarlas a otra ;)
+
+
+ 
+PETICIONES HTTP DESDE LA TERMINAN CON CURL
+Curl va y obtiene de internet lo que nosotros necesitemos obtiene y manda
+curl direccionweb
+curl -o google_prueba.html // la bandera -o guarda en un archivo la URL especificada
+curl -O https://raw.githubusercontent.com/beco/cli/master/files/movies.dat  
+
+curl https://raw.githubusercontent.com/beco/cli/master/files/movies.dat |grep 1995
+
+curl https://raw.githubusercontent.com/beco/cli/master/files/movies.dat 2>/dev/null |grep 1995    //mandar algo a dev/null en este caso del estandar error (2) es decirle que lo ignore
+
+Enviando Datos con curl con GET y POST
+curl http://httpbin.org/get?variable=2
+
+curl http://httpbin.org/get?variable=2&uno=1$dos=2
+//Las variables recibidas en get se guardan en cache y en un monton de lugares mas, se muestran en argumentos (args{}) de la peticion
+
+POST
+curl --data "variable1=1&Variable2=2" http://httpbin.org/post
+se guardan en el encabezado form
+
+Cada ves que hacemos un request mandamos la variable user-agent que nos dice que sistema estoy usando para  accesar a tu servicio
+curl -A "agente_roylix" --data "variable1=1&Variable2=2" http://httpbin.org/post
+
+curl --data "message=Que onda que haces" https://guarded-dusk-89606.herokuapp.com/messages
+cat >request_data.txt 
+//Crea un archivo y despues escribes el contenido te sales con control + c
+curl -d @request_data.txt https://guarded-dusk-89606.herokuapp.com/messages
+
+//la arroba es para decir apunta y lee ese archivo
+
+====================================================================
+En el editor VI o VIM
+Cuando entras a un archivo presionas O <------ Para escribir insertar
+Cuando terminas presionamos ESC para ir a la consola
+y salimos guardando todo con :wq!
+===================================================================
+curl -d @request_data.txt http://httpbin.org/post
+CURL es potente va y trae de internet va y pone lo que le indiquemos
+
+
+ USO de CRONTABS 
+Crontab Es el sistema de agenda en unix
+para agendar procesos puntuales y que se ejecuten cada x tiempo
+
+crontab -l
+//imprime en pantalla cual es el crontab instalado
+
+crontab -e
+//para editar en VIM un crontab
+
+Suponiendo que crearemos todos nuestros crontabs en la carpeta
+$HOME/SRC/crontabs
+Los tenemos que separar por columnas y tabs (o espacios yo uso tabs)
+*	*	*	*	*	$HOME/SRC/crontabs/miarchivo.sh o ejecutable etc
+
+columna 1 significa minutos (0 a 59)
+columna 2 significa horas (0 a 23)
+columna 3 dia del mes (1 a 31)
+columna 4 mes (1 a 12)
+columna 5 dia de la semana 0 = domingo - 6 sabado
+columna 6 script donde se va ejecutar
+
+el * = significa todos los valores
+1-10 = de 1 a 10
+*/5  = ejecutate cada 5 minutos 
+1,3,4,9 = ejecuta cada 1,3,4 puntualmente
+
+
+Donde la interseccion de todas las condiciones te tiempo se cumplan va ejecutar ese comando crontab
+
+
+
+
+TIP: si hacemos en un cd $HOME + tab nos convierte la ruta de nuestro home 
+ejemplo: cd $HOME + tab == cd /Users/MiMacbook/
+
+==============================================
+CHMOD + x archivo.sh 
+le da permisos para que se ejecute un archivo
+tambien puede ser
+chmod 744 archivo.sh (solo le da permisos de ejecucion x al usuario actual)
+======================================================
+find ~/ -iname '*.*' -type f | grep 'cadena' -i | wc -l
+======================================================
+
+Busca en toda la Mac los archivos que incluyan algo de la cadena buscada en grep
+Example:
+find ~/ -name '*.*' -type f | grep 'tabata' -i 
+
+-i //case insensitive
+
+
+
+-------------------
+open -a Sublime\ Text\ 2.app ~/.profile
+open -a Sublime\ Text\ 2.app ~/.gitconfig
+open -a Sublime\ Text\ 2.app ~/.bash_profile
+export PATH=$PATH:/usr/bin/git
+
+
+-------------------------------------------------
